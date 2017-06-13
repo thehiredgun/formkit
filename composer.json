@@ -1,0 +1,19 @@
+{
+    "name": "thehiredgun/formkit",
+    "authors": [
+        {
+            "name": "Nick Wakeman",
+            "email": "nick@thehiredgun.tech",
+            "url": "https://thehiredgun.tech"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "laravel/framework": "5.4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "FormKit\\": "src"
+        }
+    }
+}
