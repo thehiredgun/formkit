@@ -24,7 +24,7 @@ class FormKit extends Kit
      * @param array $rules
      * @param bool  $validateCsrfToken
      */
-    public function __construct(array $rules, $validateCsrfToken = false)
+    public function __construct(array $rules, $validateCsrfToken = true)
     {
         foreach ($rules as $name => $rule) {
             switch(gettype($rule)) {
