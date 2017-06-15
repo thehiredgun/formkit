@@ -11,11 +11,6 @@ namespace FormKit;
 class ErrorMessageKit extends Kit
 {
     /**
-     * @var array $errors
-     */
-    private $errors = [];
-
-    /**
      * @var string $errorClass
      */
     private $errorClass = 'has-error';

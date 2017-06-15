@@ -5,6 +5,11 @@ namespace FormKit;
 abstract class Kit
 {
     /**
+     * @var array $errors
+     */
+    protected $errors = [];
+
+    /**
      * has errors (for the form or for a property)
      *
      * @param string $name

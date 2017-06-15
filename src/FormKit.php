@@ -17,7 +17,6 @@ class FormKit extends Kit
 {
     private $request;
     private $rules;
-    protected $errors;
 
     /**
      * construct
