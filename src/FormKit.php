@@ -8,12 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 /**
- * FormKit
+ * FormKit: a nice little toolkit to better manage forms in Laravel
  *
  * @author Nick Wakeman <nick@thehiredgun.tech>
  * @since  2017-06-13
  */
-class FormKit
+class FormKit extends Kit
 {
     private $request;
     private $rules;
@@ -22,13 +22,11 @@ class FormKit
     /**
      * construct
      *
-     * @param Request $request
-     * @param array   $rules
-     * @param bool    $validateCsrfToken
+     * @param array $rules
+     * @param bool  $validateCsrfToken
      */
-    public function __construct(Request $request, array $rules, bool $validateCsrfToken = false)
+    public function __construct(array $rules, $validateCsrfToken = false)
     {
-        $this->request = $request;
         foreach ($rules as $name => $rule) {
             switch(gettype($rule)) {
                 case 'string':
@@ -51,7 +49,18 @@ class FormKit
                 'in:' . csrf_token(),
             ];
         }
+    }
 
+    /**
+     * validate
+     *
+     * @param Request $request
+     * @param array   $rules
+     * @param bool    $validateCsrfToken
+     */
+    public function validate(Request $request)
+    {
+        $this->request = $request;
         $validator = Validator::make($this->request->all(), $this->rules);
         if ($formErrors = $validator->errors()) {
             foreach ($this->rules as $name => $rule) {
@@ -67,21 +76,9 @@ class FormKit
     }
 
     /**
-     * has errors (for the form or for a property)
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasErrors(string $name = '')
-    {
-        return ('' === $name) ? (bool) count($this->errors) : isset($this->errors[$name]);
-    }
-
-    /**
      * get errors (for the form or for the property)
      *
-     * @var string $name
+     * @param string $name
      *
      * @return array
      */
@@ -114,8 +111,6 @@ class FormKit
         } else {
             Throw new Exception('$properties should be \'*\' or of type string or array, not ' . getType($properties));
         }
-
-        return $this;
     }
 
     /**
@@ -132,7 +127,15 @@ class FormKit
                 $object->$name = $this->request->input($name);
             }
         }
-        
-        return;
+    }
+
+    /**
+     * get error message kit
+     *
+     * @return ErrorMessageKit
+     */
+    public function getErrorMessageKit()
+    {
+        return new ErrorMessageKit($this->errors);
     }
 }
