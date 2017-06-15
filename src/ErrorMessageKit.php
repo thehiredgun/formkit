@@ -49,7 +49,7 @@ class ErrorMessageKit extends Kit
         } else {
             $errorMessages = '';
             foreach ($this->errors as $error) {
-                $errorMessages .= $this->getErrorMessageForKey($name);
+                $errorMessages .= $this->getErrorMessagesForKey($name);
             }
             return $errorMessages;
         }
