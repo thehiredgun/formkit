@@ -35,7 +35,7 @@ class FormKit extends Kit
                     }
                 break;
                 case 'array':
-                    $this->rules[$name] = $rules;
+                    $this->rules[$name] = $rule;
                 break;
                 default:
                     Throw new Exception('$rules should be of type array or string, not ' . getType($rules));
