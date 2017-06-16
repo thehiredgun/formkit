@@ -22,11 +22,13 @@ class SubmissionKit
     /**
      * construct
      *
-     * @param array $rules
-     * @param bool  $validateCsrfToken
+     * @param Request $request
+     * @param array   $rules
+     * @param bool    $validateCsrfToken
      */
-    public function __construct(array $rules, $validateCsrfToken = true)
+    public function __construct(Request $request, array $rules, $validateCsrfToken = true)
     {
+        $this->request = $request;
         foreach ($rules as $name => $rule) {
             switch(gettype($rule)) {
                 case 'string':
@@ -54,16 +56,11 @@ class SubmissionKit
     /**
      * validate
      *
-     * @param Request $request
-     * @param array   $rules
-     * @param bool    $validateCsrfToken
-     *
      * @return bool
      */
-    public function validate(Request $request)
+    public function validate()
     {
-        $this->request = $request;
-        if ($request->isMethod('post')) {
+        if ($this->request->isMethod('post')) {
             $validator = Validator::make($this->request->all(), $this->rules);
             if ($formErrors = $validator->errors()) {
                 foreach ($this->rules as $name => $rule) {
