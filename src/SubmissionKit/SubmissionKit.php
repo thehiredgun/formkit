@@ -1,6 +1,6 @@
 <?php
 
-namespace FormKit/SubmissionKit;
+namespace FormKit\SubmissionKit;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
