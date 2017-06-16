@@ -1,6 +1,6 @@
 <?php
 
-namespace FormKit;
+namespace FormKit/SubmissionKit;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Validator;
  * @author Nick Wakeman <nick@thehiredgun.tech>
  * @since  2017-06-13
  */
-class FormKit extends Kit
+class SubmissionKit
 {
     private $request;
     private $rules;
+    private $errors;
 
     /**
      * construct
@@ -75,6 +76,18 @@ class FormKit extends Kit
     }
 
     /**
+     * has errors (for the form or for a property)
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasErrors(string $name = '')
+    {
+        return ('' === $name) ? (bool) count($this->errors) : isset($this->errors[$name]);
+    }
+
+    /**
      * get errors (for the form or for the property)
      *
      * @param string $name
@@ -126,15 +139,5 @@ class FormKit extends Kit
                 $object->$name = $this->request->input($name);
             }
         }
-    }
-
-    /**
-     * get error message kit
-     *
-     * @return ErrorMessageKit
-     */
-    public function getErrorMessageKit()
-    {
-        return new ErrorMessageKit($this->errors);
     }
 }
