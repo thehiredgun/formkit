@@ -61,18 +61,24 @@ class SubmissionKit
     public function validate(Request $request)
     {
         $this->request = $request;
-        $validator = Validator::make($this->request->all(), $this->rules);
-        if ($formErrors = $validator->errors()) {
-            foreach ($this->rules as $name => $rule) {
-                if ($errorsForInput = $formErrors->get($name)) {
-                    if ('_token' === $name) {
-                        $this->errors[$name] = ['A System Error Occurred'];
-                    } else {
-                        $this->errors[$name] = $errorsForInput;
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($this->request->all(), $this->rules);
+            if ($formErrors = $validator->errors()) {
+                foreach ($this->rules as $name => $rule) {
+                    if ($errorsForInput = $formErrors->get($name)) {
+                        if ('_token' === $name) {
+                            $this->errors[$name] = ['A System Error Occurred'];
+                        } else {
+                            $this->errors[$name] = $errorsForInput;
+                        }
                     }
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /**
