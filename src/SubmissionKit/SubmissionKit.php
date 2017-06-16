@@ -57,6 +57,8 @@ class SubmissionKit
      * @param Request $request
      * @param array   $rules
      * @param bool    $validateCsrfToken
+     *
+     * @return bool
      */
     public function validate(Request $request)
     {
