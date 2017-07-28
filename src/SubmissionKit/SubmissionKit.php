@@ -105,6 +105,30 @@ class SubmissionKit
     }
 
     /**
+     * add error
+     *
+     * @param string $name
+     * @param string $error
+     */
+    public function addError(string $name, string $error)
+    {
+        $this->errors[$name][] = $error;
+    }
+
+    /**
+     * set errors
+     *
+     * set the errors array for a $name
+     *
+     * @param string $name
+     * @param array  $errors
+     */
+    public function setErrors(string $name, array $errors)
+    {
+        $this->errors[$name] = $errors;
+    }
+
+    /**
      * set properties on an Eloquent object
      *
      * @param Model $object
