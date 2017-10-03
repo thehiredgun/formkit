@@ -60,7 +60,7 @@ class SubmissionKit
      */
     public function validate()
     {
-        if ($this->request->isMethod('post')) {
+        if (in_array($this->request->method(), ['POST', 'PUT'])) {
             $validator = Validator::make($this->request->all(), $this->rules);
             if ($formErrors = $validator->errors()) {
                 foreach ($this->rules as $name => $rule) {
