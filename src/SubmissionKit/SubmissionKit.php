@@ -2,31 +2,42 @@
 
 namespace FormKit\SubmissionKit;
 
-use Exception;
-use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 /**
- * FormKit: a nice little toolkit to better manage forms in Laravel
+ * SubmissionKit: a nice bit of kit to better manage data-submissions in Laravel
  *
  * @author Nick Wakeman <nick@thehiredgun.tech>
  * @since  2017-06-13
  */
 class SubmissionKit
 {
-    private $request;
-    private $rules;
-    private $errors;
+    /**
+     * @var Request $request
+     */
+    protected $request;
+
+    /**
+     * @var array $rules
+     */
+    protected $rules = [];
+
+    /**
+     * @var array $errors
+     */
+    protected $errors = [];
 
     /**
      * construct
      *
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
      * @param Request $request
      * @param array   $rules
-     * @param bool    $validateCsrfToken
      */
-    public function __construct(Request $request, array $rules, $validateCsrfToken = true)
+    public function __construct(Request $request, array $rules)
     {
         $this->request = $request;
         foreach ($rules as $name => $rule) {
@@ -41,43 +52,27 @@ class SubmissionKit
                     $this->rules[$name] = $rule;
                 break;
                 default:
-                    Throw new Exception('$rules should be of type array or string, not ' . getType($rules));
+                    Throw new InvalidArgumentException('Each Rule should be of type array or string, not ' . getType($rule));
                 break;
             }
-        }
-        if ($validateCsrfToken) {
-            $this->rules['_token'] = [
-                'required',
-                'in:' . csrf_token(),
-            ];
         }
     }
 
     /**
      * validate
      *
-     * @return bool
+     * @author Nick Wakeman <nick@thehiredgun.tech>
      */
     public function validate()
     {
-        if (in_array($this->request->method(), ['POST', 'PUT'])) {
-            $validator = Validator::make($this->request->all(), $this->rules);
-            if ($formErrors = $validator->errors()) {
-                foreach ($this->rules as $name => $rule) {
-                    if ($errorsForInput = $formErrors->get($name)) {
-                        if ('_token' === $name) {
-                            $this->errors[$name] = ['A System Error Occurred'];
-                        } else {
-                            $this->errors[$name] = $errorsForInput;
-                        }
-                    }
+        $validator = Validator::make($this->request->all(), $this->rules);
+        if ($formErrors = $validator->errors()) {
+            foreach ($this->rules as $name => $rule) {
+                if ($errorsForInput = $formErrors->get($name)) {
+                    $this->errors[$name] = $errorsForInput;
                 }
             }
-
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -129,13 +124,14 @@ class SubmissionKit
     }
 
     /**
-     * set properties on an Eloquent object
+     * set properties on an object
      *
-     * @param Model $object
-     * @param mixed $properties
-     * @param array $options
+     * @param  object $object
+     * @param  mixed  $properties
+     *
+     * @throws InvalidArgumentException
      */
-    public function setProperties(Model $object, $properties = '*', $options = [])
+    public function setProperties($object, $properties = '*')
     {
         if ('*' === $properties) {
             foreach ($this->rules as $name => $rule) {
@@ -150,23 +146,53 @@ class SubmissionKit
                 $this->setProperty($object, $name);
             }
         } else {
-            Throw new Exception('$properties should be \'*\' or of type string or array, not ' . getType($properties));
+            Throw new InvalidArgumentException('$propertyNames should be \'*\' or of type string or array, not ' . getType($propertyNames));
         }
     }
 
     /**
      * set property on an object
      *
-     * @param Model  $object
+     * @param mixed  $object
      * @param string $name
-     * @param array  $options
      */
-    private function setProperty(Model $object, string $name, $options = [])
+    protected function setProperty($object, string $name)
     {
-        if ('_token' != $name) {
-            if (!$this->hasErrors($name)) {
-                $object->$name = $this->request->input($name);
-            }
+        if (!$this->hasErrors($name)) {
+            $object->$name = $this->request->input($name);
         }
+    }
+
+    /**
+     * is valid: the inverse of hasErrors()
+     *
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     * @since  1.0.0 (2017-11-06)
+     *
+     * @param  string $key
+     *
+     * @return bool
+     */
+    public function isValid(string $key = '')
+    {
+        return !$this->hasErrors($key);
+    }
+
+    /**
+     * remove errors
+     *
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     * @since  1.0.0 (2017-11-06)
+     *
+     * @param  string $key
+     *
+     * @throws InvalidArgumentException
+     */
+    public function removeErrors(string $key)
+    {
+        if (!isset($this->errors[$key])) {
+            Throw new InvalidArgumentException();
+        }
+        unset($this->errors[$key]);
     }
 }
