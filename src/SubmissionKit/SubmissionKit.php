@@ -185,7 +185,7 @@ class SubmissionKit
      * @param  string $name
      * @param  array  $options
      */
-    private function setProperty($object, string $name, $options = [])
+    protected function setProperty($object, string $name, $options = [])
     {
         if ('_token' != $name) {
             if (!$this->hasErrors($name)) {
