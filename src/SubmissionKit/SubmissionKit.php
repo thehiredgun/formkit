@@ -3,7 +3,6 @@
 namespace FormKit\SubmissionKit;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,16 +14,29 @@ use Illuminate\Support\Facades\Validator;
  */
 class SubmissionKit
 {
-    private $request;
-    private $rules;
-    private $errors;
+    /**
+     * @var Request $request
+     */
+    protected $request;
+
+    /**
+     * @var array $rules
+     */
+    protected $rules;
+
+    /**
+     * @var array $errors
+     */
+    protected $errors;
 
     /**
      * construct
      *
-     * @param Request $request
-     * @param array   $rules
-     * @param bool    $validateCsrfToken
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
+     * @param  Request $request
+     * @param  array   $rules
+     * @param  bool    $validateCsrfToken
      */
     public function __construct(Request $request, array $rules, $validateCsrfToken = true)
     {
@@ -56,6 +68,8 @@ class SubmissionKit
     /**
      * validate
      *
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
      * @return bool
      */
     public function validate()
@@ -83,7 +97,9 @@ class SubmissionKit
     /**
      * has errors (for the form or for a property)
      *
-     * @param string $name
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
+     * @param  string $name
      *
      * @return bool
      */
@@ -95,7 +111,9 @@ class SubmissionKit
     /**
      * get errors (for the form or for the property)
      *
-     * @param string $name
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
+     * @param  string $name
      *
      * @return array
      */
@@ -107,8 +125,10 @@ class SubmissionKit
     /**
      * add error
      *
-     * @param string $name
-     * @param string $error
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
+     * @param  string $name
+     * @param  string $error
      */
     public function addError(string $name, string $error)
     {
@@ -118,10 +138,10 @@ class SubmissionKit
     /**
      * set errors
      *
-     * set the errors array for a $name
+     * @author Nick Wakeman <nick@thehiredgun.tech>
      *
-     * @param string $name
-     * @param array  $errors
+     * @param  string $name
+     * @param  array  $errors
      */
     public function setErrors(string $name, array $errors)
     {
@@ -131,11 +151,13 @@ class SubmissionKit
     /**
      * set properties on an Eloquent object
      *
-     * @param Model $object
-     * @param mixed $properties
-     * @param array $options
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
+     * @param  mixed $object
+     * @param  mixed $properties
+     * @param  array $options
      */
-    public function setProperties(Model $object, $properties = '*', $options = [])
+    public function setProperties($object, $properties = '*', $options = [])
     {
         if ('*' === $properties) {
             foreach ($this->rules as $name => $rule) {
@@ -157,11 +179,13 @@ class SubmissionKit
     /**
      * set property on an object
      *
-     * @param Model  $object
-     * @param string $name
-     * @param array  $options
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     *
+     * @param  mixed  $object
+     * @param  string $name
+     * @param  array  $options
      */
-    private function setProperty(Model $object, string $name, $options = [])
+    private function setProperty($object, string $name, $options = [])
     {
         if ('_token' != $name) {
             if (!$this->hasErrors($name)) {
