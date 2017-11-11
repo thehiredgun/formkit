@@ -3,7 +3,7 @@
     "description": "A combined back- and front-end package to manage data-submissions and forms in Laravel",
     "keywords": [
         "Laravel",
-        "form"
+        "form",
         "forms",
         "validation",
         "validator",
