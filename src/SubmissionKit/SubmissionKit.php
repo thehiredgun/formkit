@@ -198,7 +198,7 @@ class SubmissionKit
      * is valid: the inverse of hasErrors()
      *
      * @author Nick Wakeman <nick@thehiredgun.tech>
-     * @since  0.7.0 (2017-11-06)
+     * @since  0.7.0 (2017-11-10)
      *
      * @param  string $key
      *
@@ -207,5 +207,23 @@ class SubmissionKit
     public function isValid(string $key = '')
     {
         return !$this->hasErrors($key);
+    }
+
+    /**
+     * remove errors
+     *
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     * @since  0.7.0 (2017-11-10)
+     *
+     * @param  string $key
+     *
+     * @throws InvalidArgumentException
+     */
+    public function removeErrors(string $key)
+    {
+        if (!isset($this->errors[$key])) {
+            Throw new InvalidArgumentException();
+        }
+        unset($this->errors[$key]);
     }
 }
