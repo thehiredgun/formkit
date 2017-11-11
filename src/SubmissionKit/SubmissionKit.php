@@ -41,16 +41,16 @@ class SubmissionKit
     public function __construct(Request $request, array $rules, $validateCsrfToken = true)
     {
         $this->request = $request;
-        foreach ($rules as $name => $rule) {
+        foreach ($rules as $key => $rule) {
             switch(gettype($rule)) {
                 case 'string':
                     $elementRules = explode('|', $rule);
                     foreach ($elementRules as $elementRule) {
-                        $this->rules[$name][] = trim($elementRule);
+                        $this->rules[$key][] = trim($elementRule);
                     }
                 break;
                 case 'array':
-                    $this->rules[$name] = $rule;
+                    $this->rules[$key] = $rule;
                 break;
                 default:
                     Throw new Exception('$rules should be of type array or string, not ' . getType($rules));
@@ -77,12 +77,12 @@ class SubmissionKit
         if (in_array($this->request->method(), ['POST', 'PUT'])) {
             $validator = Validator::make($this->request->all(), $this->rules);
             if ($formErrors = $validator->errors()) {
-                foreach ($this->rules as $name => $rule) {
-                    if ($errorsForInput = $formErrors->get($name)) {
-                        if ('_token' === $name) {
-                            $this->errors[$name] = ['A System Error Occurred'];
+                foreach ($this->rules as $key => $rule) {
+                    if ($errorsForInput = $formErrors->get($key)) {
+                        if ('_token' === $key) {
+                            $this->errors[$key] = ['A System Error Occurred'];
                         } else {
-                            $this->errors[$name] = $errorsForInput;
+                            $this->errors[$key] = $errorsForInput;
                         }
                     }
                 }
@@ -99,13 +99,13 @@ class SubmissionKit
      *
      * @author Nick Wakeman <nick@thehiredgun.tech>
      *
-     * @param  string $name
+     * @param  string $key
      *
      * @return bool
      */
-    public function hasErrors(string $name = '')
+    public function hasErrors(string $key = '')
     {
-        return ('' === $name) ? (bool) count($this->errors) : isset($this->errors[$name]);
+        return ('' === $key) ? (bool) count($this->errors) : isset($this->errors[$key]);
     }
 
     /**
@@ -113,13 +113,13 @@ class SubmissionKit
      *
      * @author Nick Wakeman <nick@thehiredgun.tech>
      *
-     * @param  string $name
+     * @param  string $key
      *
      * @return array
      */
-    public function getErrors(string $name = '')
+    public function getErrors(string $key = '')
     {
-        return ('' === $name) ? $this->errors : $this->errors[$name];
+        return ('' === $key) ? $this->errors : $this->errors[$key];
     }
 
     /**
@@ -127,12 +127,12 @@ class SubmissionKit
      *
      * @author Nick Wakeman <nick@thehiredgun.tech>
      *
-     * @param  string $name
+     * @param  string $key
      * @param  string $error
      */
-    public function addError(string $name, string $error)
+    public function addError(string $key, string $error)
     {
-        $this->errors[$name][] = $error;
+        $this->errors[$key][] = $error;
     }
 
     /**
@@ -140,12 +140,12 @@ class SubmissionKit
      *
      * @author Nick Wakeman <nick@thehiredgun.tech>
      *
-     * @param  string $name
+     * @param  string $key
      * @param  array  $errors
      */
-    public function setErrors(string $name, array $errors)
+    public function setErrors(string $key, array $errors)
     {
-        $this->errors[$name] = $errors;
+        $this->errors[$key] = $errors;
     }
 
     /**
@@ -160,16 +160,16 @@ class SubmissionKit
     public function setProperties($object, $properties = '*', $options = [])
     {
         if ('*' === $properties) {
-            foreach ($this->rules as $name => $rule) {
-                $this->setProperty($object, $name);
+            foreach ($this->rules as $key => $rule) {
+                $this->setProperty($object, $key);
             }
         } elseif (is_array($properties)) {
-            foreach ($properties as $name) {
-                $this->setProperty($object, $name);
+            foreach ($properties as $key) {
+                $this->setProperty($object, $key);
             }
         } elseif (is_string($properties)) {
-            foreach (explode(',', $properties) as $name) {
-                $this->setProperty($object, $name);
+            foreach (explode(',', $properties) as $key) {
+                $this->setProperty($object, $key);
             }
         } else {
             Throw new Exception('$properties should be \'*\' or of type string or array, not ' . getType($properties));
@@ -182,14 +182,14 @@ class SubmissionKit
      * @author Nick Wakeman <nick@thehiredgun.tech>
      *
      * @param  mixed  $object
-     * @param  string $name
+     * @param  string $key
      * @param  array  $options
      */
-    protected function setProperty($object, string $name, $options = [])
+    protected function setProperty($object, string $key, $options = [])
     {
-        if ('_token' != $name) {
-            if (!$this->hasErrors($name)) {
-                $object->$name = $this->request->input($name);
+        if ('_token' != $key) {
+            if (!$this->hasErrors($key)) {
+                $object->$key = $this->request->input($key);
             }
         }
     }
