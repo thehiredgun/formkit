@@ -1,10 +1,24 @@
 {
     "name": "thehiredgun/formkit",
+    "description": "A combined back- and front-end package to manage data-submissions and forms in Laravel",
+    "keywords": [
+        "Laravel",
+        "form",
+        "forms",
+        "validation",
+        "validator",
+        "bootstrap",
+        "middleware",
+        "library",
+        "frontend",
+        "backend"
+    ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Nick Wakeman",
             "email": "nick@thehiredgun.tech",
-            "url": "https://thehiredgun.tech"
+            "homepage": "https://thehiredgun.tech"
         }
     ],
     "require": {
@@ -13,7 +27,8 @@
     },
     "autoload": {
         "psr-4": {
-            "FormKit\\": "src"
+            "FormKit\\SubmissionKit\\": "src/SubmissionKit/",
+            "FormKit\\TemplateKit\\": "src/TemplateKit/"
         }
     }
 }
