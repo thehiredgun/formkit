@@ -193,4 +193,19 @@ class SubmissionKit
             }
         }
     }
+
+    /**
+     * is valid: the inverse of hasErrors()
+     *
+     * @author Nick Wakeman <nick@thehiredgun.tech>
+     * @since  0.7.0 (2017-11-06)
+     *
+     * @param  string $key
+     *
+     * @return bool
+     */
+    public function isValid(string $key = '')
+    {
+        return !$this->hasErrors($key);
+    }
 }
